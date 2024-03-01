@@ -1,7 +1,7 @@
 from player import Player
 from places import BoxSize, Coord, Path
 
-
+# This is from master branch
 class Board:
 
     def __init__(self, size: BoxSize, initial_resources: list[list[int]]): ...
