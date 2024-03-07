@@ -5,7 +5,7 @@ import yogi
 
 
 class Game:
-
+    
     def __init__(self): ...
 
     def get_board(self) -> Board: ...

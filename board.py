@@ -2,10 +2,15 @@ from player import Player
 from places import BoxSize, Coord, Path
 
 class Board:
+    _size: BoxSize
+    _initial_resources: list[list[int]]
 
-    def __init__(self, size: BoxSize, initial_resources: list[list[int]]): ...
+    def __init__(self, size: BoxSize, initial_resources: list[list[int]]):
+        self._size = size
+        self._initial_resources = initial_resources
 
-    def get_size(self) -> BoxSize: ...
+    def get_size(self) -> BoxSize:
+        return 
 
     def get_resources(self, coord: Coord) -> int: ...
 
