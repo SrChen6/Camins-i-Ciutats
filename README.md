@@ -11,3 +11,8 @@ En aquest projecte es busca crear un joc lleugerament similar a Catan‚Ñ¢. Per m√
 ## Com crear un README
 
 [Manual de README](https://www.makeareadme.com/)
+
+que es
+como se instala
+como se usa
+licencia

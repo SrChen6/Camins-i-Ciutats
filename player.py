@@ -10,7 +10,7 @@ class Player:
         self._color = color
 
     def get_id(self) -> int:
-        """Returns the information of a player"""
+        """Returns the information of a player (the number)"""
         return self._id
 
     def get_cash(self) -> int:
