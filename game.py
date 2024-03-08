@@ -12,14 +12,13 @@ class Game:
     _cash_o: int
     _max_city: int
     _board: Board
-    _players =list[Player]
+    _players = list[Player]
 
 
     def __init__(self): 
         """Constructor of the Game class"""
         if yogi.read(str) == "number_turns":
             self._num_turns = yogi.read(int)
-        print(self._num_turns)
         if yogi.read(str) == "path_price":
             self._path_price = yogi.read(int)
         if yogi.read(str) == "city_price":
@@ -32,10 +31,8 @@ class Game:
             self._max_city = yogi.read(int)
         if yogi.read(str) == "board_size":
             self._board = self.get_board()
-        print(self._city_price)
         if yogi.read(str) == "num_players":
             self._num_players = yogi.read(int)
-        print(self._board._size)
 
 
     def get_board(self) -> Board:
@@ -46,14 +43,21 @@ class Game:
 
 
     def get_players(self) -> list[Player]:
-        """Returns the number of players and their colors"""
+        """Returns a list of all the players"""
+        players: list[Player] = []
+        for n in range(self._num_players):
+            if yogi.read(str) == "player_color":
+                players.append(Player(n, self._cash_o, yogi.read(str)))
+            
+        for n in range(self._num_players):
+            if yogi.read(str) == "player_city":
+# To add a path, use add_path() in board
 
-        self._num_players = yogi.read(int)
-        return [self.get_current_player() for _ in range(self._num_players)]
-
+        
 
     def get_current_player(self) -> Player:
         """Returns the id, the cash and the color of a single player"""
+
 
 
     def is_game_over(self) -> bool: 

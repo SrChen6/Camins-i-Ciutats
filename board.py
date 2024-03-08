@@ -31,15 +31,15 @@ class Board:
 
     def add_city(self, player: Player, coord: Coord) -> None:
         """Adds a city for a player in a coordenate on the board"""
-        ...
+        self._citites.append(player, coord)
 
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
-        ...
+        
 
     def add_path(self, player: Player, path: Path) -> None:
         """Adds a path for a player"""
-        ...
+        
 
     def substract_resource(self, coord: Coord) -> None:
         """subtracts 1 unit of resources arount a coordenate"""
