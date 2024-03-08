@@ -18,7 +18,7 @@ class Game:
 
     def get_board(self) -> Board: ...
     """Returns the information of the board (size and resources)"""
-    
+    size = [yogi.read(int),yogi.read(int)]
 
     def get_players(self) -> list[Player]: ...
     """Returns the number of players and their colors"""
