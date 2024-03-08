@@ -12,7 +12,8 @@ class Game:
     _cash_o: int
     _max_city: int
     _board: Board
-    _num_players: int
+    _players =list[Player]
+
 
     def __init__(self): 
         """Constructor of the Game class"""
@@ -34,7 +35,7 @@ class Game:
         print(self._city_price)
         if yogi.read(str) == "num_players":
             self._num_players = yogi.read(int)
-
+        print(self._board._size)
 
 
     def get_board(self) -> Board:
@@ -43,7 +44,6 @@ class Game:
         resources = [[yogi.read(int) for _ in range(size[1])]for _ in range(size[0])]
         return Board(size, resources)
 
-        
 
     def get_players(self) -> list[Player]:
         """Returns the number of players and their colors"""
@@ -56,11 +56,8 @@ class Game:
         """Returns the id, the cash and the color of a single player"""
 
 
-
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
-
-
 
 
     def next_turn(self) -> None: ...
