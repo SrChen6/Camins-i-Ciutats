@@ -1,9 +1,9 @@
 from player import Player
 from places import BoxSize, Coord, Path
-#comentario de test
+
 class Board:
     _size: BoxSize
-    _initial_resources: list[list[int]]
+    _resources: list[list[int]]
     _citites: list[tuple[Player, Coord]]
     _paths: list[tuple[Player, Path]]
 
@@ -11,7 +11,7 @@ class Board:
     def __init__(self, size: BoxSize, initial_resources: list[list[int]]):
         """Constructor of the Board class"""
         self._size = size
-        self._initial_resources = initial_resources
+        self._resources = initial_resources
 
     def get_size(self) -> BoxSize:
         """Returns the size of the board"""
@@ -19,7 +19,7 @@ class Board:
 
     def get_resources(self, coord: Coord) -> int:
         """Returns the number of resources of a single coordenate"""
-        return self._initial_resources
+        return self._resources
 
     def get_cities(self) -> list[tuple[Player, Coord]]: 
         """Returns the cities of every player"""
