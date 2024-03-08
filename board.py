@@ -1,6 +1,6 @@
 from player import Player
 from places import BoxSize, Coord, Path
-
+#comentario de test
 class Board:
     _size: BoxSize
     _initial_resources: list[list[int]]
