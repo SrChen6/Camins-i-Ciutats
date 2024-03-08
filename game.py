@@ -25,15 +25,19 @@ class Game:
         self._board = get_board()
 
 
+
     def get_board(self) -> Board:
         """Returns the information of the board (size and resources)"""
+
         size = board.get_size(yogi.read(int), yogi.read(int))
         resources = [[read(int) for _ in range(size[1])]for _ in range(size[0])]
         return Board(size, resources)
+
         
 
     def get_players(self) -> list[Player]:
         """Returns the number of players and their colors"""
+
         self._num_players = read(int)
         return [get_current_player() for _ in range(_num_players)]
 
@@ -44,6 +48,8 @@ class Game:
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
+
+
 
 
     def next_turn(self) -> None: ...
