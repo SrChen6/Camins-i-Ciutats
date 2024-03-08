@@ -50,10 +50,8 @@ class Game:
                 players.append(Player(n, self._cash_o, yogi.read(str)))
             
         for n in range(self._num_players):
-            if yogi.read(str) == "player_city":
-# To add a path, use add_path() in board
-
-        
+        # To add a path, use add_path() in board
+            ...
 
     def get_current_player(self) -> Player:
         """Returns the id, the cash and the color of a single player"""
