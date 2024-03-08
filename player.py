@@ -23,4 +23,4 @@ class Player:
 
     def update_cash(self, value: int) -> None:
         """Updates the cash of a player"""
-        return 
+        ...
