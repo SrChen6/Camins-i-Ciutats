@@ -39,6 +39,7 @@ class Board:
 
     def add_path(self, player: Player, path: Path) -> None:
         """Adds a path for a player"""
+        self._paths.append(player, path)
         
 
     def substract_resource(self, coord: Coord) -> None:
