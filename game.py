@@ -45,7 +45,7 @@ class Game:
         print(f"max number of cities: {self._max_city}")
         print(f"board size: {self._board._size}")
         print(f"fisrt player's color: {self._players[0]._color}")
-        print(f"first ")
+        print(f"first citites: {self._board._citites[0]._}")
 
 
     def get_board(self) -> Board:
