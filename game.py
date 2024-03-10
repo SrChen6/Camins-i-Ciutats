@@ -10,10 +10,10 @@ class Game:
     _city_price: int
     _destr_price: int
     _cash_o: int
-    _max_city: int
     _board: Board
+    _max_city: int
     _players = list[Player]
-
+    
 
     def __init__(self): 
         """Constructor of the Game class"""
@@ -35,7 +35,8 @@ class Game:
             self._num_players = yogi.read(int)
         self._players = self.get_players()
         for player in self._players:
-            self._board._citites.append(player, [yogi.read(int),yogi.read(int)])
+            if yogi.read(str) == "player_city":
+                self._board._citites.append([player, [yogi.read(int),yogi.read(int)]])
         print("-----")
         print(f"number of turns: {self._num_turns}")
         print(f"path price: {self._path_price}")
@@ -45,14 +46,14 @@ class Game:
         print(f"max number of cities: {self._max_city}")
         print(f"board size: {self._board._size}")
         print(f"fisrt player's color: {self._players[0]._color}")
-        print(f"first citites: {self._board._citites[0]._}")
+        print(f"first citites: {self._board._citites[0][1]}")
 
 
     def get_board(self) -> Board:
         """Returns the information of the board (size and resources)"""
         size = [yogi.read(int) for _ in range(2)]
         resources = [[yogi.read(int) for _ in range(size[1])]for _ in range(size[0])]
-        return Board(size, resources)
+        return Board(size, resources, [], [])
 
 
     def get_players(self) -> list[Player]:
@@ -62,6 +63,7 @@ class Game:
         for n in range(self._num_players):
             if yogi.read(str) == "player_color":
                 players.append(Player(n, self._cash_o, yogi.read(str)))
+        return players
 
 
     def get_current_player(self) -> Player:

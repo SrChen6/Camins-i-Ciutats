@@ -8,10 +8,13 @@ class Board:
     _paths: list[tuple[Player, Path]]
 
 
-    def __init__(self, size: BoxSize, initial_resources: list[list[int]]):
+    def __init__(self, size: BoxSize, initial_resources: list[list[int]], 
+                 cities: list[tuple[Player, Coord]], paths: list[tuple[Player, Path]]):
         """Constructor of the Board class"""
         self._size = size
         self._resources = initial_resources
+        self._citites = cities
+        self._paths = paths
 
     def get_size(self) -> BoxSize:
         """Returns the size of the board"""
