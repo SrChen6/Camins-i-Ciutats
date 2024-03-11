@@ -9,7 +9,6 @@ class Game:
     _path_price: int
     _city_price: int
     _destr_price: int
-    _cash_o: int  # No hace falta guardar el inicial (irá cambiando)
     _board: Board
     _max_city: int
     _players = list[Player]
@@ -20,7 +19,7 @@ class Game:
 
     def __init__(self): 
         """Constructor of the Game class"""
-        if yogi.read(str) == "number_turns":
+        if yogi.read(str) == "number_turns": # algernativa: asser
             self._num_turns = yogi.read(int)
         if yogi.read(str) == "path_price":
             self._path_price = yogi.read(int)
@@ -29,33 +28,24 @@ class Game:
         if yogi.read(str) == "destruction_price":
             self._destr_price = yogi.read(int)
         if yogi.read(str) == "initial_cash":
-            self._cash_o = yogi.read(int)
+            cash_o = yogi.read(int)
         if yogi.read(str) == "max_cities":
             self._max_city = yogi.read(int)
         if yogi.read(str) == "board_size":
             size = [yogi.read(int) for _ in range(2)]
             resources = [[yogi.read(int) for _ in range(size[1])]for _ in range(size[0])]
             self._board = Board(size, resources, [], [])
+            print(self._board._resources)
         if yogi.read(str) == "num_players":
             self._num_players = yogi.read(int)
         self._players = []
         for n in range(self._num_players): # color
             if yogi.read(str) == "player_color":
-                self._players.append(Player(n, self._cash_o, yogi.read(str)))
+                self._players.append(Player(n, cash_o, yogi.read(str)))
         self._players = self.get_players()
         for player in self._players: #first city
             if yogi.read(str) == "player_city":
                 self._board._citites.append([player, [yogi.read(int),yogi.read(int)]])
-        print("-----")
-        print(f"number of turns: {self._num_turns}")
-        print(f"path price: {self._path_price}")
-        print(f"city price: {self._city_price}")
-        print(f"destruction price: {self._destr_price}")
-        print(f"initial cash: {self._cash_o}")
-        print(f"max number of cities: {self._max_city}")
-        print(f"board size: {self._board._size}")
-        print(f"fisrt player's color: {self._players[0]._color}")
-        print(f"first citites: {self._board._citites[0][1]}")
 
 
     def get_board(self) -> Board: # No és la informació inicial, símplement retorna la info
