@@ -38,7 +38,7 @@ class Board:
 
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
-        
+        ...
 
     def add_path(self, player: Player, path: Path) -> None:
         """Adds a path for a player"""
