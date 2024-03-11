@@ -22,7 +22,7 @@ class Board:
 
     def get_resources(self, coord: Coord) -> int:
         """Returns the number of resources of a single coordenate"""
-        return self._resources
+        return self._resources[coord[0]][coord[1]]
 
     def get_cities(self) -> list[tuple[Player, Coord]]: 
         """Returns the cities of every player"""
