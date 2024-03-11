@@ -9,11 +9,14 @@ class Game:
     _path_price: int
     _city_price: int
     _destr_price: int
-    _cash_o: int
+    _cash_o: int  # No hace falta guardar el inicial (irá cambiando)
     _board: Board
     _max_city: int
     _players = list[Player]
-    
+
+    _current_turn: int
+
+
 
     def __init__(self): 
         """Constructor of the Game class"""
@@ -30,50 +33,53 @@ class Game:
         if yogi.read(str) == "max_cities":
             self._max_city = yogi.read(int)
         if yogi.read(str) == "board_size":
-            self._board = self.get_board()
+            size = [yogi.read(int) for _ in range(2)]
+            resources = [[yogi.read(int) for _ in range(size[1])]for _ in range(size[0])]
+            self._board = Board(size, resources, [], [])
         if yogi.read(str) == "num_players":
             self._num_players = yogi.read(int)
+        self._players = []
+        for n in range(self._num_players): # color
+            if yogi.read(str) == "player_color":
+                self._players.append(Player(n, self._cash_o, yogi.read(str)))
         self._players = self.get_players()
-        for player in self._players:
+        for player in self._players: #first city
             if yogi.read(str) == "player_city":
                 self._board._citites.append([player, [yogi.read(int),yogi.read(int)]])
         print("-----")
-        # print(f"number of turns: {self._num_turns}")
-        # print(f"path price: {self._path_price}")
-        # print(f"city price: {self._city_price}")
-        # print(f"destruction price: {self._destr_price}")
-        # print(f"initial cash: {self._cash_o}")
-        # print(f"max number of cities: {self._max_city}")
-        # print(f"board size: {self._board._size}")
-        # print(f"fisrt player's color: {self._players[0]._color}")
-        # print(f"first citites: {self._board._citites[0][1]}")
+        print(f"number of turns: {self._num_turns}")
+        print(f"path price: {self._path_price}")
+        print(f"city price: {self._city_price}")
+        print(f"destruction price: {self._destr_price}")
+        print(f"initial cash: {self._cash_o}")
+        print(f"max number of cities: {self._max_city}")
+        print(f"board size: {self._board._size}")
+        print(f"fisrt player's color: {self._players[0]._color}")
+        print(f"first citites: {self._board._citites[0][1]}")
 
 
-    def get_board(self) -> Board:
+    def get_board(self) -> Board: # No és la informació inicial, símplement retorna la info
+        # tota la lectura inicial es fa dins de init
         """Returns the information of the board (size and resources)"""
-        size = [yogi.read(int) for _ in range(2)]
-        resources = [[yogi.read(int) for _ in range(size[1])]for _ in range(size[0])]
-        return Board(size, resources, [], [])
+        return self._board
 
 
     def get_players(self) -> list[Player]:
         """Returns a list of all the players"""
-        # Not sure what it shoud do
-        players: list[Player] = []
-        for n in range(self._num_players):
-            if yogi.read(str) == "player_color":
-                players.append(Player(n, self._cash_o, yogi.read(str)))
-        return players
+        return self._players
 
 
     def get_current_player(self) -> Player:
         """Returns the id, the cash and the color of a single player"""
         #Not sure what it does, input is all colors followed by all cities
+        return self._players[self._current_turn%self._num_players + 1]
 
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
+        return self._num_turns == self._current_turn
+
+
+    def next_turn(self) -> None:
+        """takes input of the next turn"""
         ...
-
-
-    def next_turn(self) -> None: ...

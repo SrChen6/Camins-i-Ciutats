@@ -34,7 +34,14 @@ class Board:
 
     def add_city(self, player: Player, coord: Coord) -> None:
         """Adds a city for a player in a coordenate on the board"""
+        """
+        condicions:
+        
+        """
+        #comprovar que coordenada no esté ocupada i que hi hagi un path del mateix jugador
+        #no ocupado: bin.search
         self._citites.append(player, coord)
+        # insert ordenat + binary (O(logn + n) + O(logn))
 
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
@@ -42,6 +49,10 @@ class Board:
 
     def add_path(self, player: Player, path: Path) -> None:
         """Adds a path for a player"""
+        '''
+        condiciones:
+
+        '''
         self._paths.append(player, path)
         
 
