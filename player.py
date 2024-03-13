@@ -23,5 +23,4 @@ class Player:
 
     def update_cash(self, value: int) -> None:
         """Updates the cash of a player"""
-        # How do I know how it changes?
-        ...
+        self._cash += value
