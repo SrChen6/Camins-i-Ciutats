@@ -18,6 +18,7 @@ class Game:
 
     def __init__(self): 
         """Constructor of the Game class"""
+        #afegir condicions
         if read(str) == "number_turns":  self._num_turns = read(int)
 
         if read(str) == "path_price": self._path_price = read(int)
@@ -69,32 +70,69 @@ class Game:
         """Returns if the game ends this round"""
         return self._num_turns == self._current_turn
 
+    def _legal_path(path: places.Path, paths: list[tuple[Player, places.Path]]) -> bool:
+        """Condicions path
+        In the board
+        lenght = 1
+        Not occupied
+        Path/city of the same player on one of the ends
+        None of the ends has a path of another player
+        """
+        return True
+
+    def _legal_city(coord: places.Coord, cities: list[tuple[Player, places.Coord]]) -> bool:
+        """Conditions city
+        In board
+        Next to a path
+        Not occupied
+        """
+        return True
+
+    def _legal_destruction(coord: places.Coord, cities: list[tuple[Player, places.Coord]]) -> bool:
+        """Conditions destruction
+        Occupied by the same player"""
+        return True
+
+    def _resource_update(player: Player) -> None:
+        """Given a player, subtracts the resources from all its cities"""
+        player_citites_coord = [coord for coord in Board._citites[1] if Board._citites[0] == player]
+        for coord in player_citites_coord:
+            #Check if in board
+            Board.substract_resource(coord)
+            Board.substract_resource(places.Coord(coord[0] - 1, coord[1]))
+            Board.substract_resource(places.Coord(coord[0], coord[1] - 1))
+            Board.substract_resource(places.Coord(coord[0] - 1, coord[1] - 1))
+
+    def _in_board(coord: places.Coord) -> bool:
+        """Given a coordenate, returns if it's in the board"""
 
     def next_turn(self) -> None:
         """takes input of the next turn"""
         self._current_turn += 1
         action = read(str)
         player = self.get_current_player()
-        valid_action = True
-        if read(int) == player._id: #Corregir los casos de accion invalida
-            coord = tuple[read(int), read(int)]
+        self._resource_update(player)
+        if read(int) == player._id:
             match action:
                 case "build_path":
+                    coord1 = tuple[read(int), read(int)]
                     coord2 = tuple[read(int), read(int)]
-                    if Board._legal_path(tuple[coord, coord2]):
-                        self._board.add_path(player, tuple[coord, coord2])
+                    if self._legal_path(places.Path(coord1, coord2), Board._paths):
+                        self._board.add_path(player, (coord1, coord2))
                         player.update_cash(-self._path_price)
                     else:
-                        print("You are not allowed to build a path here. Turn cancelled.") #esta bé que escrigui 3 vegades el invalid input?
+                        print("You are not allowed to build a path here. Turn cancelled.")
                 case "build_city":
-                    if Board._legal_city(coord):
-                        self._board.add_city(player, tuple[read(int), read(int)])
+                    coord = (read(int), read(int))
+                    if self._legal_city(coord, Board._citites):
+                        self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
                     else:
                         print("You are not allowed to build a city here. Turn cancelled.")
                 case "destroy_city":
-                    if Board._legal_destruction(coord):
-                        self._board.remove_city(tuple[read(int), read(int)])
+                    coord = (read(int), read(int))
+                    if self._legal_destruction(coord, Board._citites):
+                        self._board.remove_city((read(int), read(int)))
                         player.update_cash(-self._destr_price)
                     else:
                         print("There is no city to destroy here. Turn cancelled.")

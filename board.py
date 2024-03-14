@@ -16,8 +16,6 @@ class Board:
         self._citites = cities
         self._paths = paths
 
-
-
     def get_size(self) -> BoxSize:
         """Returns the size of the board"""
         return self._size
@@ -33,28 +31,6 @@ class Board:
     def get_paths(self) -> list[tuple[Player, Path]]: 
         """Returns the paths of every player"""
         return self._paths
-    
-
-    def _legal_path(path: Path) -> bool:
-        """Condicions
-        In the board
-        Not occupied
-        Path/city of the same player on one of the ends
-        None of the ends has a path of another player
-        """
-
-
-    def _legal_city(coord: Coord) -> bool:
-        """Conditions
-        In board
-        Next to a path
-        Not occupied
-        """
-
-
-    def _legal_destruction(coord: Coord) -> bool:
-        """Conditions
-        Occupied by the same player"""
 
 
     def add_city(self, player: Player, coord: Coord) -> None:
@@ -63,12 +39,12 @@ class Board:
         Conditions:
         There's a player's path connected to the place
         """
-        #no ocupado: bin.search
         self._citites.append(player, coord)
-        # insert ordenat + binary (O(logn + n) + O(logn))
 
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
+        # player = find the current player
+        # self._citites.remove(self._citites(player, coord))
         ...
 
     def add_path(self, player: Player, path: Path) -> None:
@@ -83,5 +59,6 @@ class Board:
         
 
     def substract_resource(self, coord: Coord) -> None:
-        """subtracts 1 unit of resources arount a coordenate"""
-        ...
+        """subtracts 1 unit of resource on a coordenate"""
+        self._resources[coord[0],coord[1]] -= 1
+        
