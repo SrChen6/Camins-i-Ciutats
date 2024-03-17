@@ -51,6 +51,7 @@ class Game:
         self._current_turn = 0
 
 
+
     def get_board(self) -> Board:
         """Returns the information of the board (size and resources)"""
         return self._board
@@ -62,15 +63,15 @@ class Game:
 
 
     def get_current_player(self) -> Player:
-        """Returns the id, the cash and the color of a single player"""
-        return self._players[self._current_turn%self._num_players + 1]
+        """Returns the player of this turn"""
+        return self._players[(self._current_turn%self._num_players)]
 
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
         return self._num_turns == self._current_turn
 
-    def _legal_path(path: places.Path, paths: list[tuple[Player, places.Path]]) -> bool:
+    def _legal_path(self, path: places.Path) -> bool:
         """Condicions path
         In the board
         lenght = 1
@@ -80,7 +81,7 @@ class Game:
         """
         return True
 
-    def _legal_city(coord: places.Coord, cities: list[tuple[Player, places.Coord]]) -> bool:
+    def _legal_city(self, coord: places.Coord) -> bool:
         """Conditions city
         In board
         Next to a path
@@ -88,14 +89,15 @@ class Game:
         """
         return True
 
-    def _legal_destruction(coord: places.Coord, cities: list[tuple[Player, places.Coord]]) -> bool:
+    def _legal_destruction(self, coord: places.Coord) -> bool:
         """Conditions destruction
         Occupied by the same player"""
         return True
 
-    def _resource_update(player: Player) -> None:
+    def _resource_update(self, player: Player) -> None:
         """Given a player, subtracts the resources from all its cities"""
         player_citites_coord = [coord for coord in Board._citites[1] if Board._citites[0] == player]
+        print(player_citites_coord)
         for coord in player_citites_coord:
             #Check if in board
             Board.substract_resource(coord)
@@ -103,39 +105,46 @@ class Game:
             Board.substract_resource(places.Coord(coord[0], coord[1] - 1))
             Board.substract_resource(places.Coord(coord[0] - 1, coord[1] - 1))
 
-    def _in_board(coord: places.Coord) -> bool:
+    def _in_board(self, coord: places.Coord) -> bool: #needs to be tested
         """Given a coordenate, returns if it's in the board"""
+        if coord[0] >= 0 and coord[0] <= self._board.get_size()[0]:
+            in_x = True
+        if coord[1] >= 0 and coord[1] <= self._board.get_size()[1]:
+            in_y = True
+        return in_x and in_y
+
 
     def next_turn(self) -> None:
         """takes input of the next turn"""
-        self._current_turn += 1
+
         action = read(str)
         player = self.get_current_player()
         self._resource_update(player)
-        if read(int) == player._id:
+        if read(int) == player._id + 1:
             match action:
                 case "build_path":
-                    coord1 = tuple[read(int), read(int)]
-                    coord2 = tuple[read(int), read(int)]
-                    if self._legal_path(places.Path(coord1, coord2), Board._paths):
+                    coord1 = (read(int), read(int))
+                    coord2 = (read(int), read(int))
+                    if self._legal_path(places.Path((coord1, coord2))):
                         self._board.add_path(player, (coord1, coord2))
                         player.update_cash(-self._path_price)
                     else:
                         print("You are not allowed to build a path here. Turn cancelled.")
                 case "build_city":
                     coord = (read(int), read(int))
-                    if self._legal_city(coord, Board._citites):
+                    if self._legal_city(coord):
                         self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
                     else:
                         print("You are not allowed to build a city here. Turn cancelled.")
                 case "destroy_city":
                     coord = (read(int), read(int))
-                    if self._legal_destruction(coord, Board._citites):
-                        self._board.remove_city((read(int), read(int)))
+                    if self._legal_destruction(coord):
+                        self._board.remove_city(coord)
                         player.update_cash(-self._destr_price)
                     else:
                         print("There is no city to destroy here. Turn cancelled.")
         else:
             print("Wrong player, turn cancelled")
+        self._current_turn += 1
 

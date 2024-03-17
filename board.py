@@ -35,27 +35,19 @@ class Board:
 
     def add_city(self, player: Player, coord: Coord) -> None:
         """Adds a city for a player in a coordenate on the board"""
-        """
-        Conditions:
-        There's a player's path connected to the place
-        """
-        self._citites.append(player, coord)
+        self._citites.append((player, coord))
 
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
-        # player = find the current player
-        # self._citites.remove(self._citites(player, coord))
-        ...
+        for city in self._citites:
+            print(city[1], type(city[1]))
+            if city[1] == list(coord): #Passing coord from type tuple to list
+                self._citites.remove(city)
+        
 
     def add_path(self, player: Player, path: Path) -> None:
         """Adds a path for a player"""
-        '''
-        Conditions:
-        There's no other path in the place
-        One of the ends is connected to a path or a city
-        There are no connected paths from other players
-        '''
-        self._paths.append(player, path)
+        self._paths.append((player, path))
         
 
     def substract_resource(self, coord: Coord) -> None:

@@ -13,13 +13,6 @@ input
 
 ## Decisions de diseny
 Explicar el mach case
-
-## Comentaris de desenvolupament
-La decisió de si l'input és legit es fa dins de game
-mientras se leen los turnos hacer un assert de que es el jugador correcto
-Métodos importantes:
-    get(...)
-    add(...)
     
 
 
