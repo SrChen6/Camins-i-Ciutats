@@ -41,7 +41,7 @@ class Game:
         self._players = []
         for n in range(self._num_players): # color
             if read(str) == "player_color":
-                self._players.append(Player(n, cash_o, read(str)))
+                self._players.append(Player(n + 1, cash_o, read(str)))
         self._players = self.get_players()
 
         for player in self._players: #first city
@@ -71,6 +71,20 @@ class Game:
         """Returns if the game ends this round"""
         return self._num_turns == self._current_turn
 
+    def _path_dist_1(self, path: places.Path) -> bool:
+        """Given a path, returns if the path has lengh 1"""
+        x1, y1 = path[0][0], path[0][1]
+        x2, y2 = path[1][0], path[1][1]
+        return abs((x1 - x2) + (y1 - y2)) == 1
+
+    def _connected_path(self, path: places.Path) -> bool:
+        """Given a path, returns if the path is connected to one of the 
+        current player's path"""
+        for player_path in self._board._paths:
+            if player_path[1][0] == path[0] or player_path[1][1] == path[0] or player_path[1][0] == path[1] or player_path[1][1] == path[1]:
+                return player_path[0] == self.get_current_player()
+        return False
+
     def _legal_path(self, path: places.Path) -> bool:
         """Condicions path
         In the board
@@ -79,25 +93,47 @@ class Game:
         Path/city of the same player on one of the ends
         None of the ends has a path of another player
         """
+        if not (self._in_board(path[0]) and self._in_board(path[1])):
+            return False
+        if not self._path_dist_1(path):
+            return False
+        for player_path in self._board._paths:
+            if player_path[1] == path:
+                return False
+        if not self._connected_path(path):
+            for player_city in self._board._citites:
+                if player_city[1] == list(path[0]) or player_city[1] == list(path[1]):
+                    return True
+            return False
         return True
 
     def _legal_city(self, coord: places.Coord) -> bool:
         """Conditions city
         In board
-        Next to a path
         Not occupied
+        Next to a path
         """
-        return True
+        if not self._in_board(coord):
+            return False
+        for player_city in self._board._citites:
+            if coord == player_city[1]:
+                return False
+        for player_path in self._board._paths:
+            if coord == player_path[1][0] or coord == player_path[1][1]:
+                return True
+        return False
 
     def _legal_destruction(self, coord: places.Coord) -> bool:
         """Conditions destruction
         Occupied by the same player"""
-        return True
+        for player_city in self._board._citites:
+            if list(coord) == player_city[1] and player_city[0] == self.get_current_player():
+                return True
+        return False
 
     def _resource_update(self, player: Player) -> None:
         """Given a player, subtracts the resources from all its cities"""
-        player_citites_coord = [coord for coord in Board._citites[1] if Board._citites[0] == player]
-        print(player_citites_coord)
+        player_citites_coord = [coord for coord in self._board._citites[1] if self._board._citites[0] == player]
         for coord in player_citites_coord:
             #Check if in board
             Board.substract_resource(coord)
@@ -107,10 +143,12 @@ class Game:
 
     def _in_board(self, coord: places.Coord) -> bool: #needs to be tested
         """Given a coordenate, returns if it's in the board"""
-        if coord[0] >= 0 and coord[0] <= self._board.get_size()[0]:
-            in_x = True
         if coord[1] >= 0 and coord[1] <= self._board.get_size()[1]:
+            in_x = True
+        else: in_x = False
+        if coord[0] >= 0 and coord[0] <= self._board.get_size()[0]:
             in_y = True
+        else: in_y = False
         return in_x and in_y
 
 
@@ -119,8 +157,8 @@ class Game:
 
         action = read(str)
         player = self.get_current_player()
-        self._resource_update(player)
-        if read(int) == player._id + 1:
+        # self._resource_update(player)
+        if read(int) == player._id:
             match action:
                 case "build_path":
                     coord1 = (read(int), read(int))
@@ -129,21 +167,21 @@ class Game:
                         self._board.add_path(player, (coord1, coord2))
                         player.update_cash(-self._path_price)
                     else:
-                        print("You are not allowed to build a path here. Turn cancelled.")
+                        print(f"Player {player._id}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
                 case "build_city":
                     coord = (read(int), read(int))
                     if self._legal_city(coord):
                         self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
                     else:
-                        print("You are not allowed to build a city here. Turn cancelled.")
+                        print(f"Player {player._id}: You are not allowed to build a city on {coord}. Turn cancelled.")
                 case "destroy_city":
                     coord = (read(int), read(int))
                     if self._legal_destruction(coord):
                         self._board.remove_city(coord)
                         player.update_cash(-self._destr_price)
                     else:
-                        print("There is no city to destroy here. Turn cancelled.")
+                        print(f"Player {player._id}: There is no city to destroy on {coord}. Turn cancelled.")
         else:
             print("Wrong player, turn cancelled")
         self._current_turn += 1

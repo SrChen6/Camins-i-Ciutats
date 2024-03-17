@@ -40,7 +40,6 @@ class Board:
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
         for city in self._citites:
-            print(city[1], type(city[1]))
             if city[1] == list(coord): #Passing coord from type tuple to list
                 self._citites.remove(city)
         
