@@ -24,3 +24,4 @@ build_path 2 4 0 4 1
 build_path 3 4 0 3 0
 build_city 1 5 5
 destroy_city 2 4 0
+build_city 3 5 5

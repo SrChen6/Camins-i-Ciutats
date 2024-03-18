@@ -51,5 +51,6 @@ class Board:
 
     def substract_resource(self, coord: Coord) -> None:
         """subtracts 1 unit of resource on a coordenate"""
-        self._resources[coord[0],coord[1]] -= 1
+        if self._resources[coord[0]][coord[1]] > 0:
+            self._resources[coord[0]][coord[1]] -= 1
         

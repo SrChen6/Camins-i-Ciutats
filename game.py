@@ -132,16 +132,24 @@ class Game:
         return False
 
     def _resource_update(self, player: Player) -> None:
-        """Given a player, subtracts the resources from all its cities"""
-        player_citites_coord = [coord for coord in self._board._citites[1] if self._board._citites[0] == player]
-        for coord in player_citites_coord:
-            #Check if in board
-            Board.substract_resource(coord)
-            Board.substract_resource(places.Coord(coord[0] - 1, coord[1]))
-            Board.substract_resource(places.Coord(coord[0], coord[1] - 1))
-            Board.substract_resource(places.Coord(coord[0] - 1, coord[1] - 1))
+        """Given a player, subtracts the resources around all his cities"""
+        for player_city in self._board._citites:
+            if player_city[0] == player:
+                dr = player_city[1]
+                dl = places.Coord((dr[0], dr[1] - 1))
+                ur = places.Coord((dr[0] - 1, dr[1]))
+                ul = places.Coord((dr[0] - 1, dr[1] - 1))
+                if self._in_board(dr) and dr[0] < self._board._size[0] and dr[1] < self._board._size[1]:
+                    self._board.substract_resource(dr)
+                if self._in_board(dl) and dl[0] < self._board._size[0]:
+                    self._board.substract_resource(dl)
+                if self._in_board(ur) and ur[1] < self._board._size[1]:
+                    self._board.substract_resource(ur)
+                if self._in_board(ul):
+                    self._board.substract_resource(ul)
 
-    def _in_board(self, coord: places.Coord) -> bool: #needs to be tested
+
+    def _in_board(self, coord: places.Coord) -> bool: 
         """Given a coordenate, returns if it's in the board"""
         if coord[1] >= 0 and coord[1] <= self._board.get_size()[1]:
             in_x = True
@@ -157,7 +165,7 @@ class Game:
 
         action = read(str)
         player = self.get_current_player()
-        # self._resource_update(player)
+        self._resource_update(player)
         if read(int) == player._id:
             match action:
                 case "build_path":
