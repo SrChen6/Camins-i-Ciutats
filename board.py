@@ -39,7 +39,7 @@ class Board:
 
     def remove_city(self, coord: Coord) -> None:
         """Removes a city for a player in a coordenate on the board"""
-        for city in self._citites:
+        for city in self.get_cities():
             if city[1] == list(coord): #Passing coord from type tuple to list
                 self._citites.remove(city)
         
@@ -51,6 +51,7 @@ class Board:
 
     def substract_resource(self, coord: Coord) -> None:
         """subtracts 1 unit of resource on a coordenate"""
-        if self._resources[coord[0]][coord[1]] > 0:
-            self._resources[coord[0]][coord[1]] -= 1
+        resource = self.get_resources(coord)
+        if resource > 0:
+            self._resources[coord[0]][coord[1]] = resource - 1
         

@@ -80,7 +80,7 @@ class Game:
     def _connected_path(self, path: places.Path) -> bool:
         """Given a path, returns if the path is connected to one of the 
         current player's path"""
-        for player_path in self._board._paths:
+        for player_path in self._board.get_paths():
             if player_path[1][0] == path[0] or player_path[1][1] == path[0] or player_path[1][0] == path[1] or player_path[1][1] == path[1]:
                 return player_path[0] == self.get_current_player()
         return False
@@ -97,11 +97,11 @@ class Game:
             return False
         if not self._path_dist_1(path):
             return False
-        for player_path in self._board._paths:
+        for player_path in self._board.get_paths():
             if player_path[1] == path:
                 return False
         if not self._connected_path(path):
-            for player_city in self._board._citites:
+            for player_city in self._board.get_cities():
                 if player_city[1] == list(path[0]) or player_city[1] == list(path[1]):
                     return True
             return False
@@ -115,10 +115,10 @@ class Game:
         """
         if not self._in_board(coord):
             return False
-        for player_city in self._board._citites:
+        for player_city in self._board.get_cities():
             if coord == player_city[1]:
                 return False
-        for player_path in self._board._paths:
+        for player_path in self._board.get_paths():
             if coord == player_path[1][0] or coord == player_path[1][1]:
                 return True
         return False
@@ -126,7 +126,7 @@ class Game:
     def _legal_destruction(self, coord: places.Coord) -> bool:
         """Conditions destruction
         Occupied by the same player"""
-        for player_city in self._board._citites:
+        for player_city in self._board.get_cities():
             if list(coord) == player_city[1] and player_city[0] == self.get_current_player():
                 return True
         return False
@@ -139,11 +139,11 @@ class Game:
                 dl = places.Coord((dr[0], dr[1] - 1))
                 ur = places.Coord((dr[0] - 1, dr[1]))
                 ul = places.Coord((dr[0] - 1, dr[1] - 1))
-                if self._in_board(dr) and dr[0] < self._board._size[0] and dr[1] < self._board._size[1]:
+                if self._in_board(dr) and dr[0] < self._board.get_size()[0] and dr[1] < self._board.get_size()[1]:
                     self._board.substract_resource(dr)
-                if self._in_board(dl) and dl[0] < self._board._size[0]:
+                if self._in_board(dl) and dl[0] < self._board.get_size()[0]:
                     self._board.substract_resource(dl)
-                if self._in_board(ur) and ur[1] < self._board._size[1]:
+                if self._in_board(ur) and ur[1] < self._board.get_size()[1]:
                     self._board.substract_resource(ur)
                 if self._in_board(ul):
                     self._board.substract_resource(ul)
