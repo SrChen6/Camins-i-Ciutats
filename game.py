@@ -18,7 +18,6 @@ class Game:
 
     def __init__(self): 
         """Constructor of the Game class"""
-        #afegir condicions
         if read(str) == "number_turns":  self._num_turns = read(int)
         if self._num_turns < 1:
             raise ValueError('The number of turns must be geater than 0')
@@ -199,7 +198,7 @@ class Game:
                         print(f"Player {player._id}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
                 case "build_city":
                     coord = (read(int), read(int))
-                    if self._legal_city(coord) and player.get_cash() >= self._city_price:
+                    if self._legal_city(coord) and player.get_cash() >= self._city_price: #and number cities is not maximum
                         self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
                     else:
