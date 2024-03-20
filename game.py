@@ -20,23 +20,42 @@ class Game:
         """Constructor of the Game class"""
         #afegir condicions
         if read(str) == "number_turns":  self._num_turns = read(int)
-
+        if self._num_turns < 1:
+            raise ValueError('The number of turns must be geater than 0')
+        
         if read(str) == "path_price": self._path_price = read(int)
+        if self._path_price < 0:
+            raise ValueError('The price to build a path must be greater or equal to 0')
 
         if read(str) == "city_price": self._city_price = read(int)
+        if self._city_price < 0:
+            raise ValueError('The price to build a city must be greater or equal to 0')
 
         if read(str) == "destruction_price": self._destr_price = read(int)
 
         if read(str) == "initial_cash": cash_o = read(int)
+        if cash_o < 0:
+            raise ValueError('The initial cash must be greater or equal to 0')
 
         if read(str) == "max_cities": self._max_city = read(int)
+        if self._path_price < 1:
+            raise ValueError('The price of the paths must be greater or equal to 0')
+
 
         if read(str) == "board_size":
             size = [read(int) for _ in range(2)]
+        if  size[0] < 1 or size[1] < 1:
+            raise ValueError('The size of the board must be 1x1 or greater')
+        else:
             resources = [[read(int) for _ in range(size[1])]for _ in range(size[0])]
             self._board = Board(size, resources, [], [])
 
+
         if read(str) == "num_players": self._num_players = read(int)
+        if self._num_players == 1:
+            print("No friends?")
+        elif self._num_players < 1:
+            raise ValueError('The number of players must be one or greater')
         
         self._players = []
         for n in range(self._num_players): # color
@@ -46,8 +65,10 @@ class Game:
 
         for player in self._players: #first city
             if read(str) == "player_city":
-                self._board._citites.append([player, [read(int),read(int)]])
-
+                coord = places.Coord((read(int),read(int)))
+                if not self._in_board(coord):
+                    raise ValueError('The city must be in the board')
+                self._board._citites.append([player, coord])
         self._current_turn = 0
 
 
@@ -162,30 +183,30 @@ class Game:
 
     def next_turn(self) -> None:
         """takes input of the next turn"""
-
         action = read(str)
         player = self.get_current_player()
         self._resource_update(player)
+        print(f"Player {player.get_id()}: you have {player.get_cash()} cash")
         if read(int) == player._id:
             match action:
                 case "build_path":
                     coord1 = (read(int), read(int))
                     coord2 = (read(int), read(int))
-                    if self._legal_path(places.Path((coord1, coord2))):
+                    if self._legal_path(places.Path((coord1, coord2))) and player.get_cash() >= self._path_price:
                         self._board.add_path(player, (coord1, coord2))
                         player.update_cash(-self._path_price)
                     else:
                         print(f"Player {player._id}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
                 case "build_city":
                     coord = (read(int), read(int))
-                    if self._legal_city(coord):
+                    if self._legal_city(coord) and player.get_cash() >= self._city_price:
                         self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
                     else:
                         print(f"Player {player._id}: You are not allowed to build a city on {coord}. Turn cancelled.")
                 case "destroy_city":
                     coord = (read(int), read(int))
-                    if self._legal_destruction(coord):
+                    if self._legal_destruction(coord) and player.get_cash() >= self._destr_price:
                         self._board.remove_city(coord)
                         player.update_cash(-self._destr_price)
                     else:
