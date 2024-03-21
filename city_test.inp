@@ -4,19 +4,24 @@ city_price 1
 destruction_price 1
 initial_cash 999999
 max_cities 99999
-board_size 6 8
-5 8 9 2 5 4 3 6
-1 4 2 5 7 7 9 2
-5 8 9 2 5 4 3 6
-1 4 2 5 7 7 9 2
-5 8 9 2 5 4 3 6
-1 4 2 5 7 7 9 2
+board_size 3 3
+9 9 9
+9 9 9
+9 9 9
 num_players 1
 player_color orange
-player_city 5 6
+player_city 2 2
 
-build_path 1 5 6 5 7
-build_path 2 4 1 4 2
-build_path 3 2 3 3 3
-build_city 1 5 7
-destroy_city 2 4 1
+build_path 1 2 2 1 2
+build_path 1 2 2 2 1
+build_path 1 2 2 2 3
+build_path 1 2 2 3 2
+build_city 1 1 2
+destroy_city 1 2 2
+build_city 1 0 0
+build_city 1 3 3
+build_path 1 1 2 0 2
+build_city 1 0 2
+destroy_city 1 0 2
+destroy_city 1 1 2
+destroy_city 1 0 0

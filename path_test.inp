@@ -1,0 +1,24 @@
+number_turns 1000
+path_price 5
+city_price 10
+destruction_price 15
+initial_cash 1000000000
+max_cities 5
+board_size 2 2
+5 8
+1 4
+num_players 2
+player_color darkred
+player_color darkgreen
+player_city 0 0
+player_city 2 2
+
+
+build_path 1 0 0 0 1
+build_path 2 2 2 2 1
+
+build_path 1 0 0 1 1
+build_path 2 2 2 0 0
+build_path 1 0 1 0 2
+build_path 2 0 0 1 0
+build_path 1 0 2 0 3

@@ -1,8 +1,8 @@
-number_turns 0
+number_turns 10
 path_price 5
 city_price 10
 destruction_price 15
-initial_cash 100
+initial_cash 0
 max_cities 5
 board_size 6 8
 5 8 9 2 5 4 3 6
