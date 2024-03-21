@@ -170,7 +170,7 @@ class Game:
         for player_city in self._board.get_cities():
             if player_city[0] == player:
                 dr = player_city[1]
-                dl = places.Coord((dr[0], dr[1] - 1))
+                dl = places.Coord((dr[0], dr[1] - 1))#check tuple changing
                 ur = places.Coord((dr[0] - 1, dr[1]))
                 ul = places.Coord((dr[0] - 1, dr[1] - 1))
                 if self._in_board(dr) and dr[0] < self._board.get_size()[0] and dr[1] < self._board.get_size()[1]:
