@@ -86,7 +86,7 @@ class Game:
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
-        print(self._num_turns, self._current_turn)
+        print("*"*20,"GAME OVER","*"*20)
         return self._num_turns == self._current_turn
 
     def _path_dist_1(self, path: places.Path) -> bool:
@@ -181,9 +181,9 @@ class Game:
         return in_x and in_y
 
     def next_turn(self) -> None:
-        """takes input of the next turn"""#write more//TODO
+        """Reads the following turn's input and executes the order"""
         if self.is_game_over():
-            print("GAME OVER") #Print the stats when the game ends\\TODO
+            pass
         else:
             player = self.get_current_player()
             self._resource_update(player)
