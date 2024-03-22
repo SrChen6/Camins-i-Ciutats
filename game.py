@@ -93,6 +93,7 @@ class Game:
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
+        print(self._num_turns, self._current_turn)
         return self._num_turns == self._current_turn
 
     def _path_dist_1(self, path: places.Path) -> bool:
@@ -196,37 +197,40 @@ class Game:
 
     def next_turn(self) -> None:
         """takes input of the next turn"""
-        player = self.get_current_player()
-        self._resource_update(player)
-        action = read(str)
-        input_id = read(int)
-        print(f"Player {player.get_id()}: you have {player.get_cash()} cash")
-        match action:
-            case "build_path":
-                coord1 = (read(int), read(int))
-                coord2 = (read(int), read(int))
-                if self._legal_path(places.Path((coord1, coord2))):
-                    self._board.add_path(player, (coord1, coord2))
-                    player.update_cash(-self._path_price)
-                elif player.get_id() == input_id:
-                    print(f"Player {player.get_id()}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
-            case "build_city":
-                coord = (read(int), read(int))
-                if self._legal_city(coord):
-                    self._board.add_city(player, coord)
-                    player.update_cash(-self._city_price)
-                elif player.get_id() == input_id:
-                    print(f"Player {player.get_id()}: You are not allowed to build a city on {coord}. Turn cancelled.")
-            case "destroy_city":
-                coord = (read(int), read(int))
-                if self._legal_destruction(coord):
-                    self._board.remove_city(coord)
-                    player.update_cash(-self._destr_price)
-                elif player.get_id() == input_id:
-                    print(f"Player {player.get_id()}: There is no city to destroy on {coord}. Turn cancelled.")
-            case _:
-                pass
-        if input_id != player.get_id():
-            print(f"Player {player.get_id()}: you entered player {input_id}'s id. Your turn will be skipped")
-        self._current_turn += 1
+        if self.is_game_over():
+            print("GAME OVER") #Print the stats when the game ends\\TODO
+        else:
+            player = self.get_current_player()
+            self._resource_update(player)
+            action = read(str)
+            input_id = read(int)
+            print(f"Player {player.get_id()}: you have {player.get_cash()} cash")
+            match action:
+                case "build_path":
+                    coord1 = (read(int), read(int))
+                    coord2 = (read(int), read(int))
+                    if self._legal_path(places.Path((coord1, coord2))):
+                        self._board.add_path(player, (coord1, coord2))
+                        player.update_cash(-self._path_price)
+                    elif player.get_id() == input_id:
+                        print(f"Player {player.get_id()}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
+                case "build_city":
+                    coord = (read(int), read(int))
+                    if self._legal_city(coord):
+                        self._board.add_city(player, coord)
+                        player.update_cash(-self._city_price)
+                    elif player.get_id() == input_id:
+                        print(f"Player {player.get_id()}: You are not allowed to build a city on {coord}. Turn cancelled.")
+                case "destroy_city":
+                    coord = (read(int), read(int))
+                    if self._legal_destruction(coord):
+                        self._board.remove_city(coord)
+                        player.update_cash(-self._destr_price)
+                    elif player.get_id() == input_id:
+                        print(f"Player {player.get_id()}: There is no city to destroy on {coord}. Turn cancelled.")
+                case _:
+                    pass
+            if input_id != player.get_id():
+                print(f"Player {player.get_id()}: you entered player {input_id}'s id. Your turn will be skipped")
+            self._current_turn += 1
 
