@@ -10,8 +10,6 @@ At the beginning of a game, all the players will have a city on the board. Every
 
 The player with the most cash at the end of all the rounds wins the game.
 
-For more information consult [this repository](https://github.com/jordi-petit/ap2-camins-i-ciutats-2024).
-
 
 ## Requirements
 
@@ -20,7 +18,7 @@ To execute this programm it is necessary to have installed the programm `Pygame`
 ## Usage
 
 The game requires a set of game conditions as inputs before beginning the game itself:
-- `number_turns x`: an integer greater than 0.
+- `number_turns x`: an integer > 0.
 - `path_price x`: an integer greater or equal to 0.
 - `city_price x`: an integer greater or equal to 0.
 - `destruction_price x`: an integer greater or equal to 0.
@@ -68,6 +66,9 @@ build_city 1 5 7
 destroy_city 2 4 1
 ```
 ## Design decisions
+
+Game constructor: if(...) is unnecessary
+...
 
 ### board.py
 

@@ -12,9 +12,7 @@ class Game:
     _board: Board
     _max_city: int
     _players: list[Player]
-
     _current_turn: int
-
 
     def __init__(self): 
         """Constructor of the Game class"""
@@ -74,22 +72,17 @@ class Game:
                 self._board.get_cities().append((player, coord))
         self._current_turn = 0
 
-
-
     def get_board(self) -> Board:
         """Returns the information of the board (size and resources)"""
         return self._board
-
 
     def get_players(self) -> list[Player]:
         """Returns a list of all the players"""
         return self._players
 
-
     def get_current_player(self) -> Player:
         """Returns the player of this turn"""
         return self._players[(self._current_turn%self._num_players)]
-
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
@@ -102,11 +95,10 @@ class Game:
         x2, y2 = path[1][0], path[1][1]
         return abs((x1 - x2) + (y1 - y2)) == 1
 
-    def _connected_path(self, path: places.Path) -> bool:
+    def _connected_paths(self, path: places.Path) -> bool:
         """Given a path, returns if the path is connected to one of the 
         current player's path"""
         for player_path in self._board.get_paths():
-            print(player_path[1],path)
             if path[0] in player_path[1] or path[1] in player_path[1]:
                 return player_path[0] == self.get_current_player()
         return False
@@ -134,7 +126,7 @@ class Game:
             coord1, coord2 = player_path[1][0], player_path[1][1]
             if (coord1, coord2) == path or (coord2, coord1) == path:
                 return False
-        if not self._connected_city_path(path) and not self._connected_path(path):
+        if not self._connected_city_path(path) and not self._connected_paths(path):
             return False
         return True
 
@@ -152,7 +144,7 @@ class Game:
             if coord == player_city[1]:
                 return False
         for player_path in self._board.get_paths(): #Checks if connected to a path
-            if coord == player_path[1][0] or coord == player_path[1][1]:
+            if coord in player_path[1]:
                 return True
         return False
 
@@ -167,11 +159,11 @@ class Game:
         return False
 
     def _resource_update(self, player: Player) -> None:
-        """Given a player, subtracts the resources around all his cities"""
+        """Given a player, subtracts the resources around all of his cities"""
         for player_city in self._board.get_cities():
             if player_city[0] == player:
-                dr = player_city[1]
-                dl = places.Coord((dr[0], dr[1] - 1))#check tuple changing
+                dr = player_city[1] #maybe change for double for()\\TODO
+                dl = places.Coord((dr[0], dr[1] - 1))
                 ur = places.Coord((dr[0] - 1, dr[1]))
                 ul = places.Coord((dr[0] - 1, dr[1] - 1))
                 if self._in_board(dr) and dr[0] < self._board.get_size()[0] and dr[1] < self._board.get_size()[1]:
@@ -183,7 +175,6 @@ class Game:
                 if self._in_board(ul):
                     self._board.substract_resource(ul)
 
-
     def _in_board(self, coord: places.Coord) -> bool: 
         """Given a coordenate, returns if it's in the board"""
         if coord[1] >= 0 and coord[1] <= self._board.get_size()[1]:
@@ -194,9 +185,8 @@ class Game:
         else: in_y = False
         return in_x and in_y
 
-
     def next_turn(self) -> None:
-        """takes input of the next turn"""
+        """takes input of the next turn"""#write more//TODO
         if self.is_game_over():
             print("GAME OVER") #Print the stats when the game ends\\TODO
         else:
