@@ -114,7 +114,7 @@ class Game:
     def _connected_city_path(self, path: places.Path) -> bool:
         """Given a path, returns if the path is connected to a city of the same player"""
         for player_city in self._board.get_cities():
-            if path[0] in player_city or path[1] in player_city:
+            if player_city[1] in path:
                 return player_city[0] == self.get_current_player()
         return False
 
