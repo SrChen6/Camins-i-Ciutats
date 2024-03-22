@@ -86,7 +86,6 @@ class Game:
 
     def is_game_over(self) -> bool: 
         """Returns if the game ends this round"""
-        print("*"*20,"GAME OVER","*"*20)
         return self._num_turns == self._current_turn
 
     def _path_dist_1(self, path: places.Path) -> bool:
@@ -182,8 +181,10 @@ class Game:
 
     def next_turn(self) -> None:
         """Reads the following turn's input and executes the order"""
-        if self.is_game_over():
-            pass
+        if self.is_game_over(): #When the game is over, prints the winner
+            # winner = max (self._players) #Key lambda to find the max cash player\\TODO
+            print("*"*20,"GAME OVER","*"*20)
+            
         else:
             player = self.get_current_player()
             self._resource_update(player)
