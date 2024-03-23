@@ -32,39 +32,37 @@ class Game:
 
         if read(str) == "initial_cash": cash_o = read(int)
         else:
-            cash_o = 0
+            cash_o = 0 #To avoid errors from not initializing
         if cash_o < 0:
             raise ValueError('The initial cash must be greater or equal to 0')
 
         if read(str) == "max_cities": self._max_city = read(int)
-        if self._path_price < 1:
+        if self._path_price < 0:
             raise ValueError('The price of the paths must be greater or equal to 0')
 
 
         if read(str) == "board_size":
             size = places.BoxSize((read(int), read(int)))
         else:
-            size = places.BoxSize((1,1))          
+            size = places.BoxSize((1,1)) #To avoid errors from not initializing
         if  size[0] < 1 or size[1] < 1:
             raise ValueError('The size of the board must be 1x1 or greater')
-        else:
+        else: #read the resources and initialize board
             resources = [[read(int) for _ in range(size[1])]for _ in range(size[0])]
             self._board = Board(size, resources, [], [])
 
-
         if read(str) == "num_players": self._num_players = read(int)
         if self._num_players == 1:
-            print("No friends?")
+            print("No friends?") #just a little easter egg
         elif self._num_players < 1:
             raise ValueError('The number of players must be one or greater')
         
         self._players = []
-        for n in range(self._num_players): # color
+        for n in range(self._num_players): # color input and initialize players
             if read(str) == "player_color":
                 self._players.append(Player(n + 1, cash_o, read(str)))
-        self._players = self.get_players()
 
-        for player in self._players: #first city
+        for player in self.get_players(): #first cities
             if read(str) == "player_city":
                 coord = places.Coord((read(int),read(int)))
                 if not self._in_board(coord):
@@ -92,7 +90,7 @@ class Game:
         """Given a path, returns if the path has lengh 1"""
         x1, y1 = path[0][0], path[0][1]
         x2, y2 = path[1][0], path[1][1]
-        return abs((x1 - x2) + (y1 - y2)) == 1
+        return abs((x1 - x2) + (y1 - y2)) == 1 #no need for sqrt 
 
     def _connected_paths(self, path: places.Path) -> bool:
         """Given a path, returns if the path is connected to one of the 
@@ -109,14 +107,9 @@ class Game:
                 return player_city[0] == self.get_current_player()
         return False
 
-    def _legal_path(self, path: places.Path) -> bool:
-        """Condicions path
-        In the board
-        lenght = 1
-        Not occupied
-        Path/city of the same player on one of the ends
-        None of the ends has a path of another player
-        """
+    def _legal_path(self, path: places.Path) -> bool: #TODO: check when connected to a path and a city of another player (with a path of another player going out of it )
+        if self.get_current_player().get_cash() < self._path_price:
+            return False
         if not (self._in_board(path[0]) and self._in_board(path[1])):
             return False
         if not self._path_dist_1(path):
@@ -125,16 +118,14 @@ class Game:
             coord1, coord2 = player_path[1][0], player_path[1][1]
             if (coord1, coord2) == path or (coord2, coord1) == path:
                 return False
-        if not self._connected_city_path(path) and not self._connected_paths(path):
+        if not (self._connected_city_path(path) or self._connected_paths(path)):
+            print(self._connected_city_path(path))
+            print(self._connected_paths(path))
             return False
         return True
 
     def _legal_city(self, coord: places.Coord) -> bool:
-        """Conditions city
-        In board
-        Not occupied
-        Next to a path
-        """
+        """Given a coord, returns if a city can be built on it"""
         if self.get_current_player().get_cash() < self._city_price:
             return False
         if not self._in_board(coord):
@@ -148,11 +139,10 @@ class Game:
         return False
 
     def _legal_destruction(self, coord: places.Coord) -> bool:
-        """Conditions destruction
-        Occupied by the same player"""
+        """Given a coord, returns if a city can be destroyed there"""
         if self.get_current_player().get_cash() < self._destr_price:
             return False
-        for player_city in self._board.get_cities():
+        for player_city in self._board.get_cities(): #checks if there is a city from the same player
             if coord == player_city[1] and player_city[0] == self.get_current_player():
                 return True
         return False
@@ -166,8 +156,9 @@ class Game:
                     for j in range(2):
                         resource_coord = places.Coord((city_coord[0] - i, city_coord[1] - j))
                         if self._in_board(resource_coord) and resource_coord[0] < self._board.get_size()[0] and resource_coord[1] < self._board.get_size()[1]:
-                            self._board.substract_resource(resource_coord)
-
+                            if self._board.get_resources(resource_coord) > 0:
+                                self._board.substract_resource(resource_coord)
+                                self.get_current_player().update_cash(1)
 
     def _in_board(self, coord: places.Coord) -> bool: 
         """Given a coordenate, returns if it's in the board"""
@@ -182,41 +173,47 @@ class Game:
     def next_turn(self) -> None:
         """Reads the following turn's input and executes the order"""
         if self.is_game_over(): #When the game is over, prints the winner
-            # winner = max (self._players) #Key lambda to find the max cash player\\TODO
+            winner = max (self._players, key=lambda player: player.get_cash())
             print("*"*20,"GAME OVER","*"*20)
+            print(f"Player {winner.get_id()} wins with {winner.get_cash()} cash!")
             
         else:
             player = self.get_current_player()
             self._resource_update(player)
+            print("-"*50)
+            print(f"Player {player.get_id()}: you have gathered resources and now have {player.get_cash()} cash")
             action = read(str)
             input_id = read(int)
-            print(f"Player {player.get_id()}: you have {player.get_cash()} cash")
             match action:
                 case "build_path":
                     coord1 = (read(int), read(int))
                     coord2 = (read(int), read(int))
-                    if self._legal_path(places.Path((coord1, coord2))):
+                    if self._legal_path(places.Path((coord1, coord2))) and player.get_id() == input_id:
                         self._board.add_path(player, (coord1, coord2))
                         player.update_cash(-self._path_price)
+                        print(f"Player{player.get_id()}: you have built a path on {coord1,coord2}, you now have {player.get_cash()} cash")
                     elif player.get_id() == input_id:
                         print(f"Player {player.get_id()}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
                 case "build_city":
                     coord = (read(int), read(int))
-                    if self._legal_city(coord):
+                    if self._legal_city(coord) and player.get_id() == input_id:
                         self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
+                        print(f"Player{player.get_id()}: you have built a city on {coord}, you now have {player.get_cash()} cash")
                     elif player.get_id() == input_id:
                         print(f"Player {player.get_id()}: You are not allowed to build a city on {coord}. Turn cancelled.")
                 case "destroy_city":
                     coord = (read(int), read(int))
-                    if self._legal_destruction(coord):
+                    if self._legal_destruction(coord) and player.get_id() == input_id:
                         self._board.remove_city(coord)
                         player.update_cash(-self._destr_price)
+                        print(f"Player{player.get_id()}: you have destroyed a city on {coord}, you now have {player.get_cash()} cash")
                     elif player.get_id() == input_id:
                         print(f"Player {player.get_id()}: There is no city to destroy on {coord}. Turn cancelled.")
                 case _:
                     pass
             if input_id != player.get_id():
-                print(f"Player {player.get_id()}: you entered player {input_id}'s id. Your turn will be skipped")
+                print(f"Player {player.get_id()}: you tried to play with player {input_id}'s id. Your turn will be skipped.")
+            print("-"*50)
             self._current_turn += 1
 

@@ -6,9 +6,32 @@ This program is a game slighly similar to Catan™.
 
 ### Rules
 
-At the beginning of a game, all the players will have a city on the board. Every turn, the player first collects the resources next to his cities and then decides between three actions: build a city, destroy a city or build a path.
+- Players: the game can be played by any positive number of players
 
-The player with the most cash at the end of all the rounds wins the game.
+- Board, nodes and edges: the board is composed of a rectangular grid of cells. Each cell has a certain number of initial resources. Every cell has four edges where paths can be built (even the edges at the end of the board). The intersection of edges are nodes, where cities can be built.
+
+- Game start: Every player starts with a city built at the board and an initial amount of cash.
+
+- Turns: The game develops by turns. At each turn the current player makes the following tasks:
+    1. Resource gathering: for each cell next to each of the player's city, the player gathers a unit of resources that is transformed into a coin for his cash, subtracting the resources from the cells. The cells can no longer give resources. If a player has more than a city next to a cell, he wins as many coins as cities (as long as there are resources to gather).
+
+    2. Action: the player can choose between three actions:
+        - Build a path: the player can build a path on an edge if the following three conditions are given:
+            - The edge is not occupied by another path
+            - One of the ends of the edge has a city or a path of the same player
+            - None of the ends of the edge has a path of another player (altough it can be a city of another player).
+
+        - Build a city: The player can build a city on any node adjacent to his paths where there are no cities. The maximum number of cities is limited for every player.
+
+        - Destroy a city: The player can destroy one of his own cities.
+
+    All the actions have a cost and it will be subtracted from their cash.
+
+    If the player does not have enough cash or tries to execute an illegal move, his turn will be skipped withought executing the action.
+
+- Goal: The player with the most cash when the number of turns reaches the maximum wins.
+
+
 
 
 ## Requirements
@@ -21,7 +44,7 @@ The game requires a set of game conditions as inputs before beginning the game i
 - `number_turns x`: an integer > 0.
 - `path_price x`: an integer greater or equal to 0.
 - `city_price x`: an integer greater or equal to 0.
-- `destruction_price x`: an integer greater or equal to 0.
+- `destruction_price x`: Any integer (if negative, cash will be given to the player when a city is destroyed)
 - `initial_cash x`: an integer greater or equal to 0.
 - `max_cities x`: an integer greater or equal to 0.
 - `board_size x y`: two integers, both greater than 0.
@@ -67,12 +90,28 @@ destroy_city 2 4 1
 ```
 ## Design decisions
 
-Game constructor: if(...) is unnecessary
-...
+### player.py
 
-### board.py
+- Cash:
+
+    When a game begins, the first thing that the player does is recollect the resources. Then, with the initial cash + the resources gathered, the player executes an action.
 
 ### game.py
 
-### places.py
-    
+- Constructor:
+
+    Although the `if(condition)` are not necessary, they are a good indicator of what the input is reading. If the inputs are invalid, the program will raise a ValueError, stoping the execution of the program completely.
+
+- Game over:
+
+    When the game is over (the maximum number of turns was reached), the program will continue executing, but a message of `GAME OVER` will be printed on Terminal, followed by the winner. It won't read any inputs or execute further instructions fron a .inp file.
+
+    To finish the execution, stop the program from Terminal or close the game window.
+
+- Turn:
+
+    If a player enters another player's id, it will be considered that the first player tried to impersonate another player, so his turn will be skipped.
+
+- Path legallity:
+
+    A city will always be on an end of 
