@@ -100,7 +100,13 @@ destroy_city 2 4 1
 
 - Constructor:
 
-    Although the `if(condition)` are not necessary, they are a good indicator of what the input is reading. If the inputs are invalid, the program will raise a ValueError, stoping the execution of the program completely.
+    Although the `if('action' == read(int))` are not necessary, they are a good indicator of what the input is reading. 
+    
+    If any of the inputs are invalid, the program will raise a ValueError, stoping the execution of the program completely.
+
+- Turns:
+
+    Before a player enter's his action, a message will be printed on Terminal with the player's id and the cash that he has. When the turn is over, another message will be printed with the cash that was left after the action.
 
 - Game over:
 
@@ -111,7 +117,3 @@ destroy_city 2 4 1
 - Turn:
 
     If a player enters another player's id, it will be considered that the first player tried to impersonate another player, so his turn will be skipped.
-
-- Path legallity:
-
-    A city will always be on an end of 

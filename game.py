@@ -174,7 +174,7 @@ class Game:
             player = self.get_current_player()
             self._resource_update(player)
             print("-"*50)
-            print(f"Player {player.get_id()}: you have gathered resources and now have {player.get_cash()} cash")
+            print(f"Player {player.get_id()}: you now have {player.get_cash()} cash")
             action = read(str)
             input_id = read(int)
             match action:
@@ -184,7 +184,6 @@ class Game:
                     if self._legal_path(places.Path((coord1, coord2))) and player.get_id() == input_id:
                         self._board.add_path(player, (coord1, coord2))
                         player.update_cash(-self._path_price)
-                        print(f"Player{player.get_id()}: you have built a path on {coord1,coord2}, you now have {player.get_cash()} cash")
                     elif player.get_id() == input_id:
                         print(f"Player {player.get_id()}: You are not allowed to build a path on {coord1, coord2}. Turn cancelled.")
                 case "build_city":
@@ -192,7 +191,6 @@ class Game:
                     if self._legal_city(coord) and player.get_id() == input_id:
                         self._board.add_city(player, coord)
                         player.update_cash(-self._city_price)
-                        print(f"Player{player.get_id()}: you have built a city on {coord}, you now have {player.get_cash()} cash")
                     elif player.get_id() == input_id:
                         print(f"Player {player.get_id()}: You are not allowed to build a city on {coord}. Turn cancelled.")
                 case "destroy_city":
@@ -200,13 +198,13 @@ class Game:
                     if self._legal_destruction(coord) and player.get_id() == input_id:
                         self._board.remove_city(coord)
                         player.update_cash(-self._destr_price)
-                        print(f"Player{player.get_id()}: you have destroyed a city on {coord}, you now have {player.get_cash()} cash")
                     elif player.get_id() == input_id:
                         print(f"Player {player.get_id()}: There is no city to destroy on {coord}. Turn cancelled.")
                 case _:
                     pass
             if input_id != player.get_id():
                 print(f"Player {player.get_id()}: you tried to play with player {input_id}'s id. Your turn will be skipped.")
+            print(f"Player {player.get_id()}: you ended your turn with {player.get_cash()} cash")
             print("-"*50)
             self._current_turn += 1
 
