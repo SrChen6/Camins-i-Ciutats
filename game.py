@@ -92,37 +92,30 @@ class Game:
         x2, y2 = path[1][0], path[1][1]
         return abs((x1 - x2) + (y1 - y2)) == 1 #no need for sqrt 
 
-    def _connected_paths(self, path: places.Path) -> bool:
-        """Given a path, returns if the path is connected to one of the 
-        current player's path"""
-        for player_path in self._board.get_paths():
-            if path[0] in player_path[1] or path[1] in player_path[1]:
-                return player_path[0] == self.get_current_player()
-        return False
-
-    def _connected_city_path(self, path: places.Path) -> bool:
-        """Given a path, returns if the path is connected to a city of the same player"""
-        for player_city in self._board.get_cities():
-            if player_city[1] in path:
-                return player_city[0] == self.get_current_player()
-        return False
-
-    def _legal_path(self, path: places.Path) -> bool: #TODO: check when connected to a path and a city of another player (with a path of another player going out of it )
+    def _legal_path(self, path: places.Path) -> bool:
         if self.get_current_player().get_cash() < self._path_price:
             return False
         if not (self._in_board(path[0]) and self._in_board(path[1])):
             return False
         if not self._path_dist_1(path):
             return False
-        for player_path in self._board.get_paths(): #checks if path occupied
+        connected = False #connected to the same player's city/path
+        has_city = True #when connected to an enemy path there has to be a city between them
+        for player_path in self._board.get_paths(): 
             coord1, coord2 = player_path[1][0], player_path[1][1]
-            if (coord1, coord2) == path or (coord2, coord1) == path:
+            if (coord1, coord2) == path or (coord2, coord1) == path: #checks if path occupied
                 return False
-        if not (self._connected_city_path(path) or self._connected_paths(path)):
-            print(self._connected_city_path(path))
-            print(self._connected_paths(path))
-            return False
-        return True
+            elif (coord1 in path or coord2 in path): 
+                if player_path[0] != self.get_current_player():#connected to enemy's path
+                    has_city = False #to be checked later on
+                else:
+                    connected = True
+        for player_city in self._board.get_cities():
+            if player_city[1] in path:
+                has_city = True
+                if player_city[0] == self.get_current_player(): #checks if same player's city
+                    connected = True
+        return connected and has_city
 
     def _legal_city(self, coord: places.Coord) -> bool:
         """Given a coord, returns if a city can be built on it"""
@@ -153,7 +146,7 @@ class Game:
             if player_city[0] == player:
                 city_coord = player_city[1]
                 for i in range(2):
-                    for j in range(2):
+                    for j in range(2): #checks if in board and if positive
                         resource_coord = places.Coord((city_coord[0] - i, city_coord[1] - j))
                         if self._in_board(resource_coord) and resource_coord[0] < self._board.get_size()[0] and resource_coord[1] < self._board.get_size()[1]:
                             if self._board.get_resources(resource_coord) > 0:
