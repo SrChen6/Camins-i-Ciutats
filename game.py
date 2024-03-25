@@ -49,6 +49,9 @@ class Game:
             raise ValueError('The size of the board must be 1x1 or greater')
         else: #read the resources and initialize board
             resources = [[read(int) for _ in range(size[1])]for _ in range(size[0])]
+            for row in resources:
+                if any(resource < 0 for resource in row):
+                    raise ValueError('All resources must be non-negative')
             self._board = Board(size, resources, [], [])
 
         if read(str) == "num_players": self._num_players = read(int)
@@ -106,13 +109,13 @@ class Game:
             if (coord1, coord2) == path or (coord2, coord1) == path: #checks if path occupied
                 return False
             elif (coord1 in path or coord2 in path): 
-                if player_path[0] != self.get_current_player():#connected to enemy's path
+                if player_path[0] != self.get_current_player():#if connected to enemy's path
                     has_city = False #to be checked later on
                 else:
                     connected = True
         for player_city in self._board.get_cities():
             if player_city[1] in path:
-                has_city = True
+                has_city = True #doesn't matter who's city it is
                 if player_city[0] == self.get_current_player(): #checks if same player's city
                     connected = True
         return connected and has_city
@@ -123,21 +126,22 @@ class Game:
             return False
         if not self._in_board(coord):
             return False
-        for player_city in self._board.get_cities(): #Checks if coord occupied
-            if coord == player_city[1]:
-                return False
-        for player_path in self._board.get_paths(): #Checks if connected to a path
-            if coord in player_path[1]:
-                return True
-        return False
+        if any(coord == player_city[1] for player_city in self._board.get_cities()):
+            #checks if coord occupied
+            return False
+        if all(not (coord in player_path[1] and player_path[0] == self.get_current_player()) for player_path in self._board.get_paths()):
+            #checks if coord connected to path of the same player
+            return False
+
+        return True
 
     def _legal_destruction(self, coord: places.Coord) -> bool:
         """Given a coord, returns if a city can be destroyed there"""
         if self.get_current_player().get_cash() < self._destr_price:
             return False
-        for player_city in self._board.get_cities(): #checks if there is a city from the same player
-            if coord == player_city[1] and player_city[0] == self.get_current_player():
-                return True
+        if any(coord == player_city[1] and player_city[0] == self.get_current_player() for player_city in self._board.get_cities()):
+            #checks if there's a city of the same player on coord
+            return True
         return False
 
     def _resource_update(self, player: Player) -> None:

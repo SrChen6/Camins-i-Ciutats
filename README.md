@@ -42,14 +42,14 @@ To execute this programm it is necessary to have installed the programm `Pygame`
 
 The game requires a set of game conditions as inputs before beginning the game itself:
 - `number_turns x`: an integer > 0.
-- `path_price x`: an integer greater or equal to 0.
-- `city_price x`: an integer greater or equal to 0.
+- `path_price x`: an integer >= 0.
+- `city_price x`: an integer >= 0.
 - `destruction_price x`: Any integer (if negative, cash will be given to the player when a city is destroyed)
-- `initial_cash x`: an integer greater or equal to 0.
-- `max_cities x`: an integer greater or equal to 0.
-- `board_size x y`: two integers, both greater than 0.
-- The initial resources on the board (as many as the board size).
-- `num_players x`: an integer greater or equal to 1.
+- `initial_cash x`: an integer >= 0.
+- `max_cities x`: an integer >= 0.
+- `board_size x y`: two integers, both > 0.
+- The initial resources on the board (as many as the board size): all of them >= 0.
+- `num_players x`: an integer >= 1.
 - `player_color a`: the desired colors for every player, as many inputs as the number of players.
 - `player_city x y`: two integers that represent the coordenates of the first city of the player. As many inputs as the number of players.
 
@@ -88,29 +88,44 @@ build_path 3 2 3 3 3
 build_city 1 5 7
 destroy_city 2 4 1
 ```
+
+This input should start in thw following state
+
+![initial_state.png | width = 100](images/InitialState.png)
+
+And finish in the following state:
+
+![final_state.png | width = 100](images/Final%20state.png)
+
 ## Design decisions
 
 ### player.py
+Comments about the program [player.py](player.py)
 
 - Cash:
 
     When a game begins, the first thing that the player does is recollect the resources. Then, with the initial cash + the resources gathered, the player executes an action.
 
 ### game.py
+Comments about the program [game.py](game.py)
 
 - Constructor:
 
     Although the `if('action' == read(int))` are not necessary, they are a good indicator of what the input is reading. 
     
-    If any of the inputs are invalid, the program will raise a ValueError, stoping the execution of the program completely.
+    If any of the initial inputs are invalid, the program will raise a ValueError, stoping the execution of the program completely. This won't won't happen with the action turns.
 
 - Turns:
 
     Before a player enter's his action, a message will be printed on Terminal with the player's id and the cash that he has. When the turn is over, another message will be printed with the cash that was left after the action.
 
+    ![turns.png](images/turns.png)
+
 - Game over:
 
-    When the game is over (the maximum number of turns was reached), the program will continue executing, but a message of `GAME OVER` will be printed on Terminal, followed by the winner. It won't read any inputs or execute further instructions fron a .inp file.
+    When the game is over (the maximum number of turns was reached), the program will continue executing, but a message of `GAME OVER` will be printed on Terminal (as the following image indicates), followed by the winner. It won't read any inputs or execute further instructions fron a .inp file.
+
+    ![game_over.png](images/Game_over.png)
 
     To finish the execution, stop the program from Terminal or close the game window.
 
